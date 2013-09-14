@@ -21,7 +21,7 @@ public class PasswordGenerator {
 	private static final int DEFAULT_PASSWORD_ROUNDS = 2;
 	private static final int DEFAULT_PASSWORD_AMOUNT = 1;
 	private static final String DEFAULT_HASH_FUNCTION = "SHA";
-	private static final String VERSION = "1.2.2";
+	private static final String VERSION = "1.2.3";
 
 	private static final Set<Character> characters = new HashSet<>(128);
 	private static final Map<String, char[]> charGroups = new HashMap<>();
@@ -225,7 +225,7 @@ public class PasswordGenerator {
 	private static void addExcludeGroup(String arg) {
 		char[] group = charGroups.get(arg);
 
-		if (arg == null) {
+		if (group == null) {
 			error("No such character group: " + arg);
 		} else {
 			for (char c : group) {
@@ -309,7 +309,7 @@ public class PasswordGenerator {
 	private static void addGroup(String arg) {
 		char[] group = charGroups.get(arg);
 
-		if (arg == null) {
+		if (group == null) {
 			error("No such character group: " + arg);
 		} else {
 			for (char c : group) {
