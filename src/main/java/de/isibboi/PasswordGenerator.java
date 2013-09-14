@@ -141,6 +141,8 @@ public class PasswordGenerator {
 		char[] upperLatin = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 		char[] numbers = "0123456789".toCharArray();
 		char[] special = "^°!\"§$%&/()=?´`{[]}\\+*~#'-_.:,;><|".toCharArray();
+		char[] binary = "01".toCharArray();
+		char[] hex = "0123456789abcdef".toCharArray();
 
 		charGroups.put("alphabet", alphabet);
 		charGroups.put("a-zA-Z", alphabet);
@@ -148,6 +150,8 @@ public class PasswordGenerator {
 		charGroups.put("A-Z", upperLatin);
 		charGroups.put("0-9", numbers);
 		charGroups.put("special", special);
+		charGroups.put("01", binary);
+		charGroups.put("0x", hex);
 
 		Set<Character> allSet = new HashSet<>(1024);
 		for (char[] chars : charGroups.values()) {
