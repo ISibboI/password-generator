@@ -80,7 +80,6 @@ public class PasswordGenerator {
 		final int bytes = PasswordGenerator.rounds * digest.getDigestLength();
 
 		final int allBytes = bytes * length * amount;
-		System.out.println(allBytes);
 
 		int currentBytes = 0;
 		DecimalFormat format = new DecimalFormat("##0.00");
