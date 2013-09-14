@@ -21,7 +21,7 @@ public class PasswordGenerator {
 	private static final int DEFAULT_PASSWORD_ROUNDS = 2;
 	private static final int DEFAULT_PASSWORD_AMOUNT = 1;
 	private static final String DEFAULT_HASH_FUNCTION = "SHA";
-	private static final String VERSION = "1.2.1";
+	private static final String VERSION = "1.2.2";
 
 	private static final Set<Character> characters = new HashSet<>(128);
 	private static final Map<String, char[]> charGroups = new HashMap<>();
@@ -176,7 +176,7 @@ public class PasswordGenerator {
 		for (String arg : args) {
 			if (current == null) {
 				if (arg.startsWith("-")) {
-					if (args.equals("--help")) {
+					if (arg.equals("--help")) {
 						printHelp();
 						System.exit(0);
 					}
