@@ -59,23 +59,17 @@ public class PasswordGenerator {
 			System.out.println("Hash function set to: " + algorithm);
 		}
 
-		Collection<String> passwords = new ArrayList<>(amount);
-
-		for (int i = 1; i <= amount; i++) {
-			System.out.println(" ===== Generating password number " + i + "/" + amount + " =====");
-			passwords.add(generatePassword(allowed));
-		}
-
-		System.out.println(" ===== FINISHED =====");
+		Collection<String> passwords = generatePasswords(allowed);
 
 		for (String password : passwords) {
 			System.out.println(password);
 		}
 	}
 
-	private static String generatePassword(char[] chars) {
+	private static Collection<String> generatePasswords(char[] chars) {
 		final char[] password = new char[length];
 		MessageDigest digest = null;
+		Collection<String> passwords = new ArrayList<>(amount);
 
 		try {
 			digest = MessageDigest.getInstance(algorithm);
@@ -86,43 +80,52 @@ public class PasswordGenerator {
 		final int bytes = PasswordGenerator.rounds * digest.getDigestLength();
 
 		final int allBytes = bytes * length * amount;
+		System.out.println(allBytes);
+
 		int currentBytes = 0;
 		DecimalFormat format = new DecimalFormat("##0.00");
 
-		for (int i = 0; i < length; i++) {
-			EntropyCollector collector = new EntropyCollector(bytes, digest);
-			collector.start();
+		for (int number = 1; number <= amount; number++) {
+			System.out.println(" ===== Generating password number " + number + "/" + amount + " =====");
+			for (int i = 0; i < length; i++) {
+				EntropyCollector collector = new EntropyCollector(bytes, digest);
+				collector.start();
 
-			System.out.println(" === Collecting entropy for character " + (i + 1) + "/" + length + " (" + bytes
-					+ " bytes) ===");
-			int lastBytesLeft = bytes;
+				System.out.println(" === Collecting entropy for character " + (i + 1) + "/" + length + " (" + bytes
+						+ " bytes) ===");
+				int lastBytesLeft = bytes;
 
-			while (!collector.isFinished()) {
-				int currentBytesLeft = collector.bytesLeft();
-				if (currentBytesLeft != lastBytesLeft) {
-					System.out.println("Still needing " + currentBytesLeft + " bytes of entropy. (Overall "
-							+ format.format((double) currentBytes / allBytes) + "%)");
-					currentBytes += lastBytesLeft - currentBytesLeft;
-					lastBytesLeft = currentBytesLeft;
-				}
-
-				try {
-					synchronized (collector) {
-						collector.wait(1000);
+				while (!collector.isFinished()) {
+					int currentBytesLeft = collector.bytesLeft();
+					if (currentBytesLeft != lastBytesLeft) {
+						System.out.println("Still needing " + currentBytesLeft + " bytes of entropy. (Overall "
+								+ format.format(100.0 * currentBytes / allBytes) + "%)");
+						currentBytes += lastBytesLeft - currentBytesLeft;
+						lastBytesLeft = currentBytesLeft;
 					}
-				} catch (InterruptedException e) {
-					throw new RuntimeException("This should never happen!", e);
+
+					try {
+						synchronized (collector) {
+							collector.wait(1000);
+						}
+					} catch (InterruptedException e) {
+						throw new RuntimeException("This should never happen!", e);
+					}
 				}
 
 				currentBytes += lastBytesLeft;
+
+				BigInteger x = new BigInteger(collector.getResult());
+				x = x.mod(BigInteger.valueOf(chars.length));
+				password[i] = chars[x.intValue()];
 			}
 
-			BigInteger x = new BigInteger(collector.getResult());
-			x = x.mod(BigInteger.valueOf(chars.length));
-			password[i] = chars[x.intValue()];
+			passwords.add(String.valueOf(password));
 		}
 
-		return String.valueOf(password);
+		System.out.println(" ===== FINISHED =====");
+
+		return passwords;
 	}
 
 	private static char[] calculateAllowedChars() {
