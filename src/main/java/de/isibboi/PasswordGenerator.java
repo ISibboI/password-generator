@@ -195,6 +195,9 @@ public class PasswordGenerator {
 				case GROUP:
 					addGroup(arg);
 					break;
+				case EXCLUDE_GROUP:
+					addExcludeGroup(arg);
+					break;
 				case CHARS:
 					addChars(arg);
 					break;
@@ -216,6 +219,18 @@ public class PasswordGenerator {
 				default:
 					throw new RuntimeException("Unknown argument: " + current);
 				}
+			}
+		}
+	}
+
+	private static void addExcludeGroup(String arg) {
+		char[] group = charGroups.get(arg);
+
+		if (arg == null) {
+			error("No such character group: " + arg);
+		} else {
+			for (char c : group) {
+				excludes.add(c);
 			}
 		}
 	}

@@ -1,7 +1,7 @@
 package de.isibboi;
 
 public enum ArgumentType {
-	LENGTH, ROUNDS, CHARS, GROUP, EXCLUDE, AMOUNT, ALGORITHM;
+	LENGTH, ROUNDS, CHARS, GROUP, EXCLUDE, AMOUNT, ALGORITHM, EXCLUDE_GROUP;
 	
 	public static ArgumentType getCommand(char c) {
 		switch (c) {
@@ -12,6 +12,7 @@ public enum ArgumentType {
 		case 'e': return EXCLUDE;
 		case 'n': return AMOUNT;
 		case 'a': return ALGORITHM;
+		case 'x': return EXCLUDE_GROUP;
 		default: return null;
 		}
 	}
