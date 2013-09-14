@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -84,6 +85,10 @@ public class PasswordGenerator {
 
 		final int bytes = PasswordGenerator.rounds * digest.getDigestLength();
 
+		final int allBytes = bytes * length * amount;
+		int currentBytes = 0;
+		DecimalFormat format = new DecimalFormat("##0.00");
+
 		for (int i = 0; i < length; i++) {
 			EntropyCollector collector = new EntropyCollector(bytes, digest);
 			collector.start();
@@ -93,18 +98,23 @@ public class PasswordGenerator {
 			int lastBytesLeft = bytes;
 
 			while (!collector.isFinished()) {
-				if (collector.bytesLeft() != lastBytesLeft) {
-					lastBytesLeft = collector.bytesLeft();
-					System.out.println("Still needing " + lastBytesLeft + " bytes of entropy.");
+				int currentBytesLeft = collector.bytesLeft();
+				if (currentBytesLeft != lastBytesLeft) {
+					System.out.println("Still needing " + currentBytesLeft + " bytes of entropy. (Overall "
+							+ format.format((double) currentBytes / allBytes) + "%)");
+					currentBytes += lastBytesLeft - currentBytesLeft;
+					lastBytesLeft = currentBytesLeft;
 				}
 
 				try {
 					synchronized (collector) {
-						collector.wait(5000);
+						collector.wait(1000);
 					}
 				} catch (InterruptedException e) {
 					throw new RuntimeException("This should never happen!", e);
 				}
+
+				currentBytes += lastBytesLeft;
 			}
 
 			BigInteger x = new BigInteger(collector.getResult());
