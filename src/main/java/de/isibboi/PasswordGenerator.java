@@ -23,7 +23,6 @@ public class PasswordGenerator {
 	private static final String DEFAULT_HASH_FUNCTION = "SHA";
 
 	private static final Set<Character> characters = new HashSet<>(128);
-	private static final Set<Character> excludes = new HashSet<>(128);
 	private static final Map<String, char[]> charGroups = new HashMap<>();
 
 	private static int length = -1;
@@ -120,11 +119,6 @@ public class PasswordGenerator {
 		}
 
 		Set<Character> allowed = new HashSet<Character>(characters);
-		allowed.removeAll(excludes);
-
-		if (allowed.size() == 0) {
-			error("No characters to use.");
-		}
 
 		char[] result = new char[allowed.size()];
 		int i = 0;
@@ -142,8 +136,10 @@ public class PasswordGenerator {
 		char[] numbers = "0123456789".toCharArray();
 		char[] special = "^°!\"§$%&/()=?´`{[]}\\+*~#'-_.:,;><|".toCharArray();
 		char[] simpleSpecial = "!\"§$%&/()=?{[]}\\+*#'-_.:,;><|".toCharArray();
+		char[] complexSpecial = "^°`´~".toCharArray();
 		char[] binary = "01".toCharArray();
 		char[] hex = "0123456789abcdef".toCharArray();
+		char[] sibbo = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ23456789abcdef0123456789!\"§$%&/()=?{[]}\\+*#'-_.:,;><|".toCharArray();
 
 		charGroups.put("alphabet", alphabet);
 		charGroups.put("a-zA-Z", alphabet);
@@ -152,8 +148,10 @@ public class PasswordGenerator {
 		charGroups.put("0-9", numbers);
 		charGroups.put("special", special);
 		charGroups.put("simpleSpecial", simpleSpecial);
+		charGroups.put("complexSpecial", complexSpecial);
 		charGroups.put("01", binary);
 		charGroups.put("0x", hex);
+		charGroups.put("sibbo", sibbo);
 
 		Set<Character> allSet = new HashSet<>(1024);
 		for (char[] chars : charGroups.values()) {
@@ -230,7 +228,7 @@ public class PasswordGenerator {
 			error("No such character group: " + arg);
 		} else {
 			for (char c : group) {
-				excludes.add(c);
+				characters.remove(c);
 			}
 		}
 	}
@@ -261,7 +259,7 @@ public class PasswordGenerator {
 
 	private static void addExcludes(String arg) {
 		for (char c : arg.toCharArray()) {
-			excludes.add(c);
+			characters.remove(c);
 		}
 	}
 
@@ -332,15 +330,17 @@ public class PasswordGenerator {
 				.println("<args> is a list of arguments, marked with - and the corresponding values, separated with space.");
 		System.out
 				.println("Per default, the password contains lowercase latin letters, if nothing else is specified. If something else is specified, those letters are not necessarily included.");
+		System.out.println("Characters are added and removed from the set of characters in the same order as you specify the arguments.");
 
 		System.out.println("\nArgument types:");
 		System.out.println("-l: Sets the length of the password. (Default: " + DEFAULT_PASSWORD_LENGTH + ")");
 		System.out.println("-r: Sets the amount rounds that should be used to calculate one character. (Default: "
 				+ DEFAULT_PASSWORD_ROUNDS + ")");
 		System.out.println("-c: Adds some chars to the set of chars that are used for the password.");
-		System.out.println("-e: Excludes the given chars from the password. This cannot be overwritten.");
+		System.out.println("-e: Removes some chars from the set of chars that are used for the password.");
 		System.out.println("-n: Sets the amount of passwords to generate. (Default: " + DEFAULT_PASSWORD_AMOUNT + ")");
 		System.out.println("-g: Adds a character group to the set of chars that are used for the password.");
+		System.out.println("-x: Removes a character group from the set of chars that are used for the password.");
 		System.out.println("-a: Sets the algorithm to use for hashing (Default: " + DEFAULT_HASH_FUNCTION + ")");
 
 		System.out.println("\nCharacter groups:");
@@ -352,6 +352,8 @@ public class PasswordGenerator {
 		System.out.println("0x: Hex.");
 		System.out.println("special: ^°!\"§$%&/()=?´`{[]}\\+*~#'-_.:,;><|");
 		System.out.println("simpleSpecial: !\"§$%&/()=?{[]}\\+*#'-_.:,;><|");
+		System.out.println("complexSpecial: ^°`´~");
+		System.out.println("sibbo: Some characters I like.");
 		System.out.println("all: All listed character groups");
 
 		System.out.println("\nAlgorithms:");
