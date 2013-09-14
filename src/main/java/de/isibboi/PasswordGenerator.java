@@ -61,7 +61,7 @@ public class PasswordGenerator {
 		Collection<String> passwords = new ArrayList<>(amount);
 
 		for (int i = 1; i <= amount; i++) {
-			System.out.println(" ===== Generating password number " + i + " =====");
+			System.out.println(" ===== Generating password number " + i + "/" + amount + " =====");
 			passwords.add(generatePassword(allowed));
 		}
 
@@ -88,7 +88,8 @@ public class PasswordGenerator {
 			EntropyCollector collector = new EntropyCollector(bytes, digest);
 			collector.start();
 
-			System.out.println(" === Collecting entropy for character " + (i + 1) + " (" + bytes + " bytes) ===");
+			System.out.println(" === Collecting entropy for character " + (i + 1) + "/" + length + " (" + bytes
+					+ " bytes) ===");
 			int lastBytesLeft = bytes;
 
 			while (!collector.isFinished()) {
@@ -140,7 +141,8 @@ public class PasswordGenerator {
 		char[] complexSpecial = "^°`´~".toCharArray();
 		char[] binary = "01".toCharArray();
 		char[] hex = "0123456789abcdef".toCharArray();
-		char[] sibbo = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ23456789abcdef0123456789!\"§$%&/()=?{[]}\\+*#'-_.:,;><|".toCharArray();
+		char[] sibbo = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ23456789abcdef0123456789!\"§$%&/()=?{[]}\\+*#'-_.:,;><|"
+				.toCharArray();
 
 		charGroups.put("alphabet", alphabet);
 		charGroups.put("a-zA-Z", alphabet);
@@ -218,7 +220,7 @@ public class PasswordGenerator {
 				default:
 					throw new RuntimeException("Unknown argument: " + current);
 				}
-				
+
 				current = null;
 			}
 		}
@@ -328,12 +330,13 @@ public class PasswordGenerator {
 
 	private static void printHelp() {
 		System.out.println("Usage:");
-		System.out.println("java -jar PasswordGenerator-"+VERSION+".jar <args>");
+		System.out.println("java -jar PasswordGenerator-" + VERSION + ".jar <args>");
 		System.out
 				.println("<args> is a list of arguments, marked with - and the corresponding values, separated with space.");
 		System.out
 				.println("Per default, the password contains lowercase latin letters, if nothing else is specified. If something else is specified, those letters are not necessarily included.");
-		System.out.println("Characters are added and removed from the set of characters in the same order as you specify the arguments.");
+		System.out
+				.println("Characters are added and removed from the set of characters in the same order as you specify the arguments.");
 
 		System.out.println("\nArgument types:");
 		System.out.println("-l: Sets the length of the password. (Default: " + DEFAULT_PASSWORD_LENGTH + ")");
