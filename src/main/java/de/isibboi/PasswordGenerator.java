@@ -218,6 +218,8 @@ public class PasswordGenerator {
 				default:
 					throw new RuntimeException("Unknown argument: " + current);
 				}
+				
+				current = null;
 			}
 		}
 	}
