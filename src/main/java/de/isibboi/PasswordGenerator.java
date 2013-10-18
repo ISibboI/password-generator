@@ -148,6 +148,7 @@ public class PasswordGenerator {
 		char[] lowerLatin = "abcdefghijklmnopqrstuvwxyz".toCharArray();
 		char[] upperLatin = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
 		char[] numbers = "0123456789".toCharArray();
+		char[] alphanumeric = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
 		char[] special = "^°!\"§$%&/()=?´`{[]}\\+*~#'-_.:,;><|".toCharArray();
 		char[] simpleSpecial = "!\"§$%&/()=?{[]}\\+*#'-_.:,;><|".toCharArray();
 		char[] complexSpecial = "^°`´~".toCharArray();
@@ -158,6 +159,8 @@ public class PasswordGenerator {
 
 		charGroups.put("alphabet", alphabet);
 		charGroups.put("a-zA-Z", alphabet);
+		charGroups.put("alphanumeric", alphanumeric);
+		charGroups.put("a-zA-Z0-9", alphanumeric);
 		charGroups.put("a-z", lowerLatin);
 		charGroups.put("A-Z", upperLatin);
 		charGroups.put("0-9", numbers);
@@ -363,6 +366,7 @@ public class PasswordGenerator {
 
 		System.out.println("\nCharacter groups:");
 		System.out.println("alphabet, a-zA-Z: Upper and lower case latin letters.");
+		System.out.println("alphanumeric, a-zA-Z0-9: Upper and lower case latin letters and numbers.");
 		System.out.println("a-z: Lower case latin letters.");
 		System.out.println("A-Z: Upper case latin letters.");
 		System.out.println("0-9: Numbers.");
